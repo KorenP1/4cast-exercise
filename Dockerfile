@@ -1,7 +1,7 @@
-FROM docker.io/postgres:16.6-alpine AS builder
+FROM docker.io/postgis/postgis:16-3.5-alpine AS builder
 WORKDIR /build
 COPY test.backup .
-RUN pg_restore -U postgres -C -F c test.backup -f gis_world_db.psql
+RUN pg_restore -U postgres -C test.backup -f gis_world_db.sql
 
-FROM docker.io/postgres:16.6-alpine
-COPY --from=builder /build/gis_world_db.psql /docker-entrypoint-initdb.d
+FROM docker.io/postgis/postgis:16-3.5-alpine
+COPY --from=builder /build/gis_world_db.sql /docker-entrypoint-initdb.d
